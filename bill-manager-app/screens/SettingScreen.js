@@ -19,6 +19,7 @@ import {
 
 const username = 'Kai Seow';
 
+{/* Reusable Setting Option Component */}
 const SettingOption = ({ title, color }) => {
   return (
     <TouchableOpacity
