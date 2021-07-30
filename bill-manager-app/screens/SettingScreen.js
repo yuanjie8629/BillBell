@@ -102,7 +102,7 @@ export default function App() {
         <Text style={styles.settingHeader}>General Settings</Text>
       </View>
 
-      <View style={{ height: hp('44%') }}>
+      <View style={{ height: (hp('44%') - StatusBar.currentHeight)}}>
         <ScrollView scrollEventThrottle={16}>
           <View style={{ flex: 1 }}>
             <ScrollView>
