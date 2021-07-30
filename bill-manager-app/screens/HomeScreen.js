@@ -40,7 +40,7 @@ const totalSpent =
   billUtilitySpent + dailySpent + transportTravelSpent + others; // total amount spent
 
 {
-  /* Home Card Component */
+  /* Reusable Home Card Component */
 }
 const HomeCard = ({ header, rm, content, end, color, marginR }) => {
   return (
@@ -100,7 +100,7 @@ const HomeCard = ({ header, rm, content, end, color, marginR }) => {
 };
 
 {
-  /* ProgressBar component*/
+  /* Reusable ProgressBar component*/
 }
 const ProgressBarHome = ({ step, height, name, color }) => {
   const [width, setWidth] = React.useState(0);
