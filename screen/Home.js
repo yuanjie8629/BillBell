@@ -4,15 +4,13 @@ import { DatabaseConnection } from '../database/Connection';
 const createTable = () => {
   db.transaction((tx) => {
       tx.executeSql(
-          "CREATE TABLE IF NOT EXISTS "
-          + "Bill"
-          + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT, Category TEXT, Amount REAL, Date TEXT);"
+        'CREATE TABLE IF NOT EXISTS Bill(ID INTEGER PRIMARY KEY AUTOINCREMENT, Title VARCHAR(20), Category VARCHAR(10), Amount REAL(100), Date VARCHAR(100))'
       )
   })
 }
 const db = DatabaseConnection.getConnection();
 
-function Home() {
+function HomeScreen() {
   useEffect(() => {
     createTable();
   }, []);
@@ -23,4 +21,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default HomeScreen;

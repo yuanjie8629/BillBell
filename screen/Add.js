@@ -1,26 +1,47 @@
-import React, { useState } from "react";
+import React, { useState , Component} from "react";
 import { Text, View, TextInput, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import { DatabaseConnection } from '../database/Connection';
+import DatePicker from 'react-native-datepicker';
 
 
 const db = DatabaseConnection.getConnection();
+class datepicker extends Component {
+  constructor(props) {
+  super(props);
 
+  this.state = {
+    date: '',
+  };
+}}
+
+function formatDate(date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('-');
+}
 function AddScreen({ navigation }) {
-    // let [dates, setDates] = useState('');
+    let [dates, setDates] = useState('');
     let [title, setTitle] = useState('');
     let [category, setCategory] = useState('');
     let [amount, setAmount] = useState('');
   
     let new_bill = () => {
-      console.log(title, category, amount);
+      console.log(title, category, amount, dates);
   
-      /*if (!dates) {
+      if (!dates) {
         alert('Please fill in the date!');
         return;
-      }*/
+      }
       if (!title) {
         alert('Please fill in the bill title !');
         return;
@@ -36,8 +57,8 @@ function AddScreen({ navigation }) {
   
       db.transaction(function (tx) {
         tx.executeSql(
-          'INSERT INTO Bill (Title, Category, Amount) VALUES (?,?,?)',
-          [title, category, amount],
+          'INSERT INTO Bill(Title, Category, Amount, Date) VALUES (?,?,?, ?)',
+           [title, category, amount, dates],
           (tx, results) => {
             console.log('Results', results.rowsAffected);
             if (results.rowsAffected > 0) {
@@ -57,25 +78,27 @@ function AddScreen({ navigation }) {
         );
       });
     };
-    const [date, setDate] = useState(new Date());
-    const [mode, setMode] = useState('date');
-    const [show, setShow] = useState(false);
+    // const [date, setDate] = useState(new Date());
+    // const [mode, setMode] = useState('date');
+    // const [show, setShow] = useState(false);
   
-    const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate || date;
-      setShow(Platform.OS === 'ios');
-      setDate(currentDate);
-    };
+    // const onChange = (event, selectedDate) => {
+    //   const currentDate = selectedDate || date;
+    //   setShow(Platform.OS === 'ios');
+    //   setDate(currentDate);
+    // };
+
+    // const onDatechange = (dates) => setDates(dates);
   
-    const showMode = (currentMode) => {
-      setShow(true);
-      setMode(currentMode);
-    };
+    // const showMode = (currentMode) => {
+    //   setShow(true);
+    //   setMode(currentMode);
+    // };
   
-    const showDatePicker = () => {
-      showMode('date');
-      console.log(date);
-    };
+    // const showDatePicker = () => {
+    //   showMode('date');
+    //   console.log(date);
+    // };
   
     
     return (
@@ -111,12 +134,29 @@ function AddScreen({ navigation }) {
         </View>
         <View style={styles.box}>
           <Text>Calender</Text>
-          <View style={styles.calendar}>
-            <Text style={styles.showdate}>{date.toDateString().replace(/^\S+\s/,'')}</Text>
+          <View style={styles.container}>
+        <Text style={styles.welcome}>
+          Welcome to react-native-datepicker example!
+        </Text>
+        <DatePicker
+          style={{width: 200}}
+          date={this.state.date}
+          mode="date"
+          placeholder="placeholder"
+          format="YYYY-MM-DD"
+          confirmBtnText="Confirm"
+          cancelBtnText="Cancel"
+          onDateChange={(date) => {this.setState({date: date});}}
+        />
+        <Text style={styles.instructions}>Date: {this.state.date}</Text>
+        </View>
+          {/* <View style={styles.calendar}>
+            <Text style={styles.showdate}>{formatDate(date)}</Text>
             <Ionicons
                 name={'ios-calendar'} 
                 size={30}
-                onPress={showDatePicker} />
+                onPress={showDatePicker}
+                />
                 {show && (<DateTimePicker
                 testID="dateTimePicker"
                 value={date}
@@ -125,7 +165,7 @@ function AddScreen({ navigation }) {
                 display="default"
                 onChange={onChange}
                 />)}
-          </View>
+          </View> */}
         </View>
         <View style={styles.box}>
             <TouchableOpacity onPress={new_bill}>
