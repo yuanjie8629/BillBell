@@ -3,18 +3,18 @@ import { Text, View, TextInput, StyleSheet, TouchableOpacity, Alert} from 'react
 import {Picker} from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { DatabaseConnection } from '../database/Connection';
-import DatePicker from 'react-native-datepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 const db = DatabaseConnection.getConnection();
-class datepicker extends Component {
-  constructor(props) {
-  super(props);
+// class datepicker extends Component {
+//   constructor(props) {
+//   super(props);
 
-  this.state = {
-    date: '',
-  };
-}}
+//   this.state = {
+//     date: '',
+//   };
+// }}
 
 function formatDate(date) {
   var d = new Date(date),
@@ -57,7 +57,7 @@ function AddScreen({ navigation }) {
   
       db.transaction(function (tx) {
         tx.executeSql(
-          'INSERT INTO Bill(Title, Category, Amount, Date) VALUES (?,?,?, ?)',
+          'INSERT INTO Bill(Title, Category, Amount, Date) VALUES (?,?,?,?)',
            [title, category, amount, dates],
           (tx, results) => {
             console.log('Results', results.rowsAffected);
@@ -78,27 +78,25 @@ function AddScreen({ navigation }) {
         );
       });
     };
-    // const [date, setDate] = useState(new Date());
-    // const [mode, setMode] = useState('date');
-    // const [show, setShow] = useState(false);
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
   
-    // const onChange = (event, selectedDate) => {
-    //   const currentDate = selectedDate || date;
-    //   setShow(Platform.OS === 'ios');
-    //   setDate(currentDate);
-    // };
-
-    // const onDatechange = (dates) => setDates(dates);
+    const onChange = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setShow(Platform.OS === 'ios');
+      setDate(currentDate);
+    };
   
-    // const showMode = (currentMode) => {
-    //   setShow(true);
-    //   setMode(currentMode);
-    // };
+    const showMode = (currentMode) => {
+      setShow(true);
+      setMode(currentMode);
+    };
   
-    // const showDatePicker = () => {
-    //   showMode('date');
-    //   console.log(date);
-    // };
+    const showDatePicker = () => {
+      showMode('date');
+      console.log(date);
+    };
   
     
     return (
@@ -134,7 +132,7 @@ function AddScreen({ navigation }) {
         </View>
         <View style={styles.box}>
           <Text>Calender</Text>
-          <View style={styles.container}>
+          {/* <View style={styles.container}>
         <Text style={styles.welcome}>
           Welcome to react-native-datepicker example!
         </Text>
@@ -149,23 +147,24 @@ function AddScreen({ navigation }) {
           onDateChange={(date) => {this.setState({date: date});}}
         />
         <Text style={styles.instructions}>Date: {this.state.date}</Text>
-        </View>
-          {/* <View style={styles.calendar}>
+        </View> */}
+          <View style={styles.calendar}>
             <Text style={styles.showdate}>{formatDate(date)}</Text>
             <Ionicons
                 name={'ios-calendar'} 
                 size={30}
                 onPress={showDatePicker}
+                
                 />
                 {show && (<DateTimePicker
-                testID="dateTimePicker"
                 value={date}
                 mode={mode}
                 is24Hour={true}
                 display="default"
                 onChange={onChange}
+                onChangeText={(dates) => setDates(dates)}
                 />)}
-          </View> */}
+          </View>
         </View>
         <View style={styles.box}>
             <TouchableOpacity onPress={new_bill}>

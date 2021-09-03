@@ -4,7 +4,7 @@ import { DatabaseConnection } from '../database/Connection';
 const createTable = () => {
   db.transaction((tx) => {
       tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS Bill(ID INTEGER PRIMARY KEY AUTOINCREMENT, Title VARCHAR(20), Category VARCHAR(10), Amount REAL(100), Date VARCHAR(100))'
+        'CREATE TABLE IF NOT EXISTS Bill(ID INTEGER PRIMARY KEY AUTOINCREMENT, Title VARCHAR(20), Category VARCHAR(10), Amount REAL(100), Date INTEGER(100))'
       )
   })
 }
