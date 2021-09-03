@@ -1,32 +1,45 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 
 const Mybutton = (props) => {
   return (
-    <TouchableOpacity
-      style={styles.button}
-      onPress={props.customClick}>
+    <View style={styles.container}>
+    <View style={styles.box}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={props.customClick}>
 
-      <Text style={styles.text}>
-        {props.title}
-      </Text>
-    </TouchableOpacity>
+        <Text style={styles.buttonText}>
+          {props.title}
+        </Text>
+      </TouchableOpacity>
+    </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
+  container: {
+    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#00C5AD',
-    color: '#ffffff',
-    padding: 10,
-    marginTop: 16,
-    marginLeft: 35,
-    marginRight: 35,
-    borderRadius: 5,
   },
-  text: {
-    color: '#ffffff',
+  button: {
+    borderRadius: 10,
+    paddingVertical: 14,
+    width: 200,
+    backgroundColor: '#f20cdb',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  box: {
+    paddingVertical:10,
+    justifyContent: 'center',
   },
 });
 

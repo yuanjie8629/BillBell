@@ -25,8 +25,9 @@ const DeleteBill = ({ navigation }) => {
                   text: 'Ok',
                   onPress: () => navigation.navigate('Home'),
                 },
+                
               ],
-              { cancelable: false }
+              { cancelable: false },
             );
           } else {
             alert('Please enter a valid bill id. !');
@@ -34,19 +35,38 @@ const DeleteBill = ({ navigation }) => {
         }
       );
     });
-  };
+};
+
+function deleteconfirm(){
+    Alert.alert(
+      'Please confirm delete',
+      'Double confirm !',
+      [
+        {
+          text: 'Yes',
+          onPress: () => DeleteBill,
+        },
+        {
+          text: 'No',
+        },
+        
+      ],
+      { cancelable: false },
+    );
+}
 return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={{ flex: 1 }}>
           <Mytextinput
+            keyboardType='numeric'
             placeholder="Enter Bill ID"
             onChangeText={
               (inputBillId) => setInputBillId(inputBillId)
             }
             style={{ padding: 10 }}
           />
-          <Mybutton title="Delete Bill" customClick={deleteBill} />
+          <Mybutton title="Delete Bill" customClick={DeleteBill} />
         </View>
       </View>
     </SafeAreaView>

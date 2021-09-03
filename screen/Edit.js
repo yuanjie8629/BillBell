@@ -20,11 +20,13 @@ const UpdateBill = ({ navigation }) => {
   let [title, setTitle] = useState('');
   let [category, setCategory] = useState('');
   let [amount, setAmount] = useState('');
+  let [dates, setDates] = useState('');
 
-  let updateAllStates = (titles, categorys, amounts) => {
+  let updateAllStates = (titles, categorys, amounts, datess) => {
     setTitle(titles);
     setCategory(categorys);
     setAmount(amounts);
+    setDates(datess)
   };
 
   let searchBill = () => {
@@ -40,18 +42,19 @@ const UpdateBill = ({ navigation }) => {
             updateAllStates(
               res.Title,
               res.Category,
-              res.Amount
+              res.Amount,
+              res.Date
             );
           } else {
             alert('Bill Not Found!');
-            updateAllStates('', '', '');
+            updateAllStates('', '', '', '');
           }
         }
       );
     });
   };
   let updateBill = () => {
-    console.log(inputBillId, title, category, amount);
+    console.log(inputBillId, title, category, amount, dates);
 
     if (!inputBillId) {
       alert('Please enter the Id!');
@@ -69,10 +72,14 @@ const UpdateBill = ({ navigation }) => {
       alert('Please enter the Amount !');
       return;
     }
+    if (!dates) {
+      alert('Please enter the Date !');
+      return;
+    }
 db.transaction((tx) => {
       tx.executeSql(
-        'UPDATE Bill set Title=?, Category=? , Amount=? where ID=?',
-        [title, category, amount, inputBillId],
+        'UPDATE Bill set Title=?, Category=? , Amount=? , Date=? where ID=?',
+        [title, category, amount, dates, inputBillId],
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
@@ -100,13 +107,15 @@ db.transaction((tx) => {
               <Mytextinput
                 placeholder="Enter Bill ID"
                 style={{ padding: 10 }}
+                keyboardType='numeric'
                 onChangeText={
                   (inputBillId) => setInputBillId(inputBillId)
                 }
               />
-<Mybutton
+              <Mybutton
                 title="Search Bill"
                 customClick={searchBill}
+                
               />
               <Mytextinput
                 placeholder="Enter Title"
@@ -116,27 +125,38 @@ db.transaction((tx) => {
                   (title) => setTitle(title)
                 }
               />
-              <View style={styles.box}>
-            <Text>Category</Text>
+            <View style={styles.box}>
+            <Text style={styles.text}>Category</Text>
             <Picker
               selectedValue={category}
-              style={styles.text}
               onValueChange={(category) => setCategory(category)}
             >
             <Picker.Item label="" value=""/>
-            <Picker.Item label="School" value="school" color="black"/>
-            <Picker.Item label="Entertainment" value="entertainment"/>
+            <Picker.Item label="Bills & Utility" value="bills" color="black"/>
+            <Picker.Item label="Transport & Travel" value="transport"/>
+            <Picker.Item label="Education" value="education"/>
+            <Picker.Item label="[Daily] Drink & Dine / Grocery / Shopping" value="daily"/>
+            <Picker.Item label="Health & Fitness" value="health"/>
+            <Picker.Item label="Personal Care" value="personalcare"/>
+            <Picker.Item label="Others" value="others"/>
             </Picker>
-          </View>
+            </View>
               <Mytextinput
                 value={amount.toString()}
                 placeholder="Enter Amount"
                 onChangeText={
                   (amount) => setAmount(amount)
                 }
-                maxLength={225}
-                numberOfLines={5}
-                multiline={true}
+                keyboardType='numeric'
+                style={{ textAlignVertical: 'top', padding: 10 }}
+              />
+              <Mytextinput
+                value={dates.toString()}
+                placeholder="Enter Date"
+                onChangeText={
+                  (dates) => setDates(dates)
+                }
+                keyboardType='numeric'
                 style={{ textAlignVertical: 'top', padding: 10 }}
               />
               <Mybutton
@@ -151,49 +171,19 @@ db.transaction((tx) => {
 
 const styles = StyleSheet.create({
   text: {
-    width: 300,
     height: 40,
     margin: 12,
-    borderBottomWidth: 1,
-  },
-
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize:17,
+    color: '#f20cdb',
   },
 
   box: {
-    paddingVertical:10,
+    padding:1,
+    justifyContent: 'center',
+    marginLeft: 35,
+    marginRight: 35,
+    marginBottom: -35,
   },
 
-  button: {
-    borderRadius: 10,
-    paddingVertical: 14,
-    width: 200,
-    backgroundColor: 'blue',
-  },
-
-  buttonText: {
-      color: 'white',
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      fontSize: 16,
-      textAlign: 'center',
-  },
-
-  calendar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 30,
-    paddingVertical: 35,
-  },
-
-  showdate: {
-    borderBottomWidth: 1,
-    width: 280,
-    margin: 5,
-  },
 });
 export default UpdateBill;

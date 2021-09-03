@@ -6,9 +6,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import AddScreen from "./screen/Add";
 import HomeScreen from "./screen/Home";
-import AlertScreen from "./screen/Delete";
-import SettingsScreen from "./screen/Edit";
-import StatisticScreen from "./screen/Test";
+import AlertScreen from "./screen/Edit";
+import SettingsScreen from "./screen/Settings";
+import StatisticScreen from "./screen/Statistic";
 
 
 
@@ -83,7 +83,7 @@ export default function App() {
         })}
         tabBarOptions={{
           showLabel:false,
-          activeTintColor: 'blue',
+          activeTintColor: '#f20cdb',
           inactiveTintColor: 'black',
         }}
       >
