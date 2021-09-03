@@ -3,14 +3,12 @@ import { Text, View, TextInput, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MainStackNavigator } from "./StackNavigator";
 
 import AddScreen from "./screen/Add";
 import HomeScreen from "./screen/Home";
 import AlertScreen from "./screen/Edit";
 import SettingsScreen from "./screen/Settings";
-import StatisticScreen from "./screen/Statistic";
-
-
 
 
 const Tab = createBottomTabNavigator();
@@ -56,7 +54,7 @@ export default function App() {
                   color={color}
                 />
               );
-            }else if (route.name === 'Statistic') {
+            }else if (route.name === 'Bill') {
               return (
                 <Ionicons
                   name={
@@ -88,7 +86,7 @@ export default function App() {
         }}
       >
         <Tab.Screen name="Home" component={HomeScreen}/>
-        <Tab.Screen name="Statistic" component={StatisticScreen} />
+        <Tab.Screen name="Bill" component={MainStackNavigator} />
         <Tab.Screen name="Add" component={AddScreen} />
         <Tab.Screen name="Alert" component={AlertScreen} />
         <Tab.Screen name="Settings" component={SettingsScreen} />
