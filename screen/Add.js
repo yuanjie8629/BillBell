@@ -93,7 +93,7 @@ function AddScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-      <Text>Title</Text>
+      <Text style={{ fontWeight: 'bold' }}>Title</Text>
       <TextInput
         style={styles.text} 
         placeholder='Title...'
@@ -101,7 +101,7 @@ function AddScreen({ navigation }) {
         />
       </View>
       <View style={styles.box}>
-      <Text>Category</Text>
+      <Text style={{ fontWeight: 'bold' }}>Category</Text>
       <Picker
         selectedValue={category}
         style={styles.text}
@@ -118,7 +118,7 @@ function AddScreen({ navigation }) {
       </Picker>
       </View>
       <View style={styles.box}>
-        <Text>MYR</Text>
+        <Text style={{ fontWeight: 'bold' }}>MYR</Text>
         <TextInput
           style={styles.text} 
           keyboardType='numeric'
@@ -127,7 +127,7 @@ function AddScreen({ navigation }) {
         />
 </View>
       <View style={styles.box}>
-        <Text>Calender</Text>
+        <Text style={{ fontWeight: 'bold' }}>Calender</Text>
         <View style={styles.calendar}>
           <Text style={styles.showdate}>{formatDate(date)}</Text>
           <Ionicons
@@ -147,7 +147,7 @@ function AddScreen({ navigation }) {
         </View>
       </View>
       <View style={styles.box}>
-        <Text>Date</Text>
+        <Text style={{ fontWeight: 'bold' }}>Date</Text>
         <TextInput
           style={styles.text} 
           keyboardType='numeric'
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     width: 200,
-    backgroundColor: '#f20cdb',
+    backgroundColor: '#ff9b9b',
   },
 
   buttonText: {

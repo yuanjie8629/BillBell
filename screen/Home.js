@@ -35,7 +35,13 @@ const billUtilitySpent = 101.2; //total spending for utility & bills category <-
 const dailySpent = 159.76; // total spending for daily category ( ) <-
 const transportTravelSpent = 120.6; // total spending for transport & travel category <-
 const others = 207.1; // addition of excluded category in home screen <-
-
+const createTable = () => {
+  db.transaction((tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS Bill(ID INTEGER PRIMARY KEY AUTOINCREMENT, Title VARCHAR(20), Category VARCHAR(10), Amount REAL(100), Date VARCHAR(10))'
+      )
+  })
+}
 const totalSpent =
   billUtilitySpent + dailySpent + transportTravelSpent + others; // total amount spent
 
@@ -103,6 +109,10 @@ const HomeCard = ({ header, rm, content, end, color, marginR }) => {
   /* ProgressBar component*/
 }
 const ProgressBarHome = ({ step, height, name, color }) => {
+  useEffect(() => {
+    createTable();
+  }, []);
+  
   const [width, setWidth] = React.useState(0);
   const animatedValue = React.useRef(new Animated.Value(-1000)).current;
   const reactive = React.useRef(new Animated.Value(-1000)).current;

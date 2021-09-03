@@ -40,17 +40,7 @@ const Tab = createBottomTabNavigator();
 function Main() {
   return (
       <Tab.Navigator
-        screenOptions={{
-          tabBarShowLabel: false,
-          tabBarStyle: {
-            position: 'absolute',
-            height: 60,
-            bottom: Platform.OS == 'android' ? 15 : 20,
-            left: 15,
-            right: 15,
-            borderRadius: 15,
-          },
-        }}>
+      tabBarOptions={{ showLabel: false, style:{ position: 'absolute', height: 60, bottom: Platform.OS == 'android' ? 15 : 20, left: 15, right: 15, borderRadius: 15, } }}>
         <Tab.Screen
           name={'Home'}
           component={HomeScreen}
