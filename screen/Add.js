@@ -1,5 +1,5 @@
 import React, { useState , Component} from "react";
-import { Text, View, TextInput, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import { Text, View, TextInput, StyleSheet, TouchableOpacity, Alert, NativeModules} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { DatabaseConnection } from '../database/Connection';
@@ -59,7 +59,7 @@ function AddScreen({ navigation }) {
               [
                 {
                   text: 'Ok',
-                  onPress: () => navigation.navigate('Home'),
+                  onPress: () => NativeModules.DevSettings.reload()
                 },
               ],
               { cancelable: false }
@@ -151,7 +151,7 @@ function AddScreen({ navigation }) {
         <TextInput
           style={styles.text} 
           keyboardType='numeric'
-          placeholder='Please'
+          placeholder='Enter date above'
           onChangeText={(dates) => setDates(dates)}
         />
       </View>

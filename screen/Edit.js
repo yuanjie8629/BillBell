@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import {
   View,
-  ScrollView,
-  KeyboardAvoidingView,
+  NativeModules,
   Alert,
   SafeAreaView,
   Text,
@@ -89,7 +88,7 @@ db.transaction((tx) => {
               [
                 {
                   text: 'Ok',
-                  onPress: () => console.log("gfagagfag"),
+                  onPress: () => NativeModules.DevSettings.reload(),
                 },
               ],
               { cancelable: false }
