@@ -1,188 +1,162 @@
-import React, { useState } from 'react';
+
+import React, { Component, PureComponent } from 'react';
 import {
-  View,
-  NativeModules,
-  Alert,
-  SafeAreaView,
-  Text,
   StyleSheet,
+  TextInput,
+  Text,
+  View,
+  ScrollView,
+  StatusBar,
+  TouchableHighlight,
 } from 'react-native';
-
-import {Picker} from '@react-native-picker/picker';
-import Mytextinput from '../Component/Mytextinput';
-import Mybutton from '../Component/Mybutton';
+import {
+  InputWithLabel,
+  PickerWithLabel,
+  AppButton,
+} from '../UI'
+import { AntDesign, Ionicons, SimpleLineIcons, MaterialIcons, Entypo} from '@expo/vector-icons';
 import { DatabaseConnection } from '../database/Connection';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+let categorydata = require('../categorydata');
 const db = DatabaseConnection.getConnection();
+type Props = {};
+export default class Edit extends Component<Props> {
 
-const UpdateBill = ({ navigation }) => {
-  let [inputBillId, setInputBillId] = useState('');
-  let [title, setTitle] = useState('');
-  let [category, setCategory] = useState('');
-  let [amount, setAmount] = useState('');
-  let [dates, setDates] = useState('');
+  constructor(props) {
+    super(props)
 
-  let updateAllStates = (titles, categorys, amounts, datess) => {
-    setTitle(titles);
-    setCategory(categorys);
-    setAmount(amounts);
-    setDates(datess)
-  };
+    this.state = {
+      billId: props.route.params.id,
+      title: '',
+      category: '',
+      amount: '',
+      date: '',
+    };
 
-  let searchBill = () => {
-    console.log(inputBillId);
+    this._query = this._query.bind(this);
+    this._update = this._update.bind(this);
+  }
+  
+   componentDidMount() {
+    this._query();
+  }
+
+  _query() {
     db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM Bill where ID = ?',
-        [inputBillId],
-        (tx, results) => {
-          var len = results.rows.length;
-          if (len > 0) {
-            let res = results.rows.item(0);
-            updateAllStates(
-              res.Title,
-              res.Category,
-              res.Amount,
-              res.Date
-            );
-          } else {
-            alert('Bill Not Found!');
-            updateAllStates('', '', '', '');
-          }
+      tx.executeSql('SELECT * FROM bill WHERE ID = ?', [this.state.billId], (tx, results) => {
+        if(results.rows.length) {
+          this.setState({
+            title: results.rows.item(0).Title,
+            category: results.rows.item(0).Category,
+            amount: results.rows.item(0).Amount,
+            date: results.rows.item(0).Date,
+          })
         }
-      );
+      })
     });
-  };
-  let updateBill = () => {
-    console.log(inputBillId, title, category, amount, dates);
+  }
 
-    if (!inputBillId) {
-      alert('Please enter the Id!');
-      return;
-    }
-    if (!title) {
-      alert('Please enter the Title !');
-      return;
-    }
-    if (!category) {
-      alert('Please enter the Category !');
-      return;
-    }
-    if (!amount) {
-      alert('Please enter the Amount !');
-      return;
-    }
-    if (!dates) {
-      alert('Please enter the Date !');
-      return;
-    }
-db.transaction((tx) => {
-      tx.executeSql(
-        'UPDATE Bill set Title=?, Category=? , Amount=? , Date=? where ID=?',
-        [title, category, amount, dates, inputBillId],
-        (tx, results) => {
-          console.log('Results', results.rowsAffected);
-          if (results.rowsAffected > 0) {
-            Alert.alert(
-              'Success',
-              'Bill updated successfully !!',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => NativeModules.DevSettings.reload(),
-                },
-              ],
-              { cancelable: false }
-            );
-          } else alert('Error updating bill');
-        }
-      );
+  _update() {
+    db.transaction((tx) => {
+      tx.executeSql('UPDATE Bill SET Title=?,Category=?,Amount=?, Date=? WHERE ID=?', [
+        this.state.title,
+        this.state.category,
+        this.state.amount,
+        this.state.date,
+        this.state.billId
+      ]);
     });
-  };
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={{ flex: 1 }}>
-              <Mytextinput
-                placeholder="Enter Bill ID"
-                style={{ padding: 10 }}
-                keyboardType='numeric'
-                onChangeText={
-                  (inputBillId) => setInputBillId(inputBillId)
-                }
-              />
-              <Mybutton
-                title="Search Bill"
-                customClick={searchBill}
-                
-              />
-              <Mytextinput
-                placeholder="Enter Title"
-                value={title}
-                style={{ padding: 10 }}
-                onChangeText={
-                  (title) => setTitle(title)
-                }
-              />
-            <View style={styles.box}>
-            <Text style={styles.text}>Category</Text>
-            <Picker
-              selectedValue={category}
-              onValueChange={(category) => setCategory(category)}
-            >
-            <Picker.Item label="" value=""/>
-            <Picker.Item label="Bills & Utility" value="bills" color="black"/>
-            <Picker.Item label="Transport & Travel" value="transport"/>
-            <Picker.Item label="Education" value="education"/>
-            <Picker.Item label="[Daily] Drink & Dine / Grocery / Shopping" value="daily"/>
-            <Picker.Item label="Health & Fitness" value="health"/>
-            <Picker.Item label="Personal Care" value="personalcare"/>
-            <Picker.Item label="Others" value="others"/>
-            </Picker>
-            </View>
-              <Mytextinput
-                value={amount.toString()}
-                placeholder="Enter Amount"
-                onChangeText={
-                  (amount) => setAmount(amount)
-                }
-                keyboardType='numeric'
-                style={{ textAlignVertical: 'top', padding: 10 }}
-              />
-              <Mytextinput
-                value={dates.toString()}
-                placeholder="Enter Date"
-                onChangeText={
-                  (dates) => setDates(dates)
-                }
-                keyboardType='numeric'
-                style={{ textAlignVertical: 'top', padding: 10 }}
-              />
-              <Mybutton
-                title="Update Bill"
-                customClick={updateBill}
-              />
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-};
+    this.props.navigation.goBack();
+  }
+
+
+  render() {
+    let bill = this.state.bill;
+
+    return (
+      <SafeAreaView style={styles.container1}>
+         <View style={styles.header}>
+            <TouchableHighlight onPress={() => this.props.navigation.goBack()}>
+              <View>
+                <AntDesign style={styles.backIcon} name="left" size={30} color="#fff" />
+              </View>
+            </TouchableHighlight>
+            <Text style={styles.title}>Edit</Text>
+          </View>
+        <ScrollView style={styles.container2}>
+          <InputWithLabel style={styles.input}
+            label={'Title'}
+            value={this.state.title}
+            onChangeText={(title) => {this.setState({title})}}
+            orientation={'vertical'}
+          />
+          <PickerWithLabel style={styles.picker}
+            label={'Category'}
+            items={categorydata.categories}
+            mode={'dialog'}
+            value={this.state.category}
+            onValueChange={(itemValue) => {this.setState({category: itemValue})
+            }}
+            
+            orientation={'vertical'}
+            textStyle={{fontSize: 24}}
+          />
+          <InputWithLabel style={styles.input}
+            label={'Amount'}
+            value={this.state.amount}
+            onChangeText={(amount) => {this.setState({amount})}}
+            orientation={'vertical'}
+          />
+          <InputWithLabel style={styles.input}
+            label={'Date'}
+            value={this.state.date}
+            onChangeText={(date) => {this.setState({date})}}
+            orientation={'vertical'}
+          />
+          <AppButton style={styles.button}
+            title={'Save'}
+            theme={'primary'}
+            onPress={this._update}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  text: {
-    height: 40,
-    margin: 12,
-    fontSize:17,
-    color: '#f20cdb',
+  container1: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  }, 
+
+  container2: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
   },
 
-  box: {
-    padding:1,
-    justifyContent: 'center',
-    marginLeft: 35,
-    marginRight: 35,
-    marginBottom: -35,
+  header: {
+    backgroundColor: '#FF9B9B',
+    height: '8%',
+    flexDirection: "row",
   },
 
+  title: {
+    color: '#fff',
+    top: '3%',
+    left: '90%',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+
+  output: {
+    fontSize: 24,
+    color: '#000099',
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
-export default UpdateBill;

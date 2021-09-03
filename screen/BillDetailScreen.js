@@ -7,11 +7,6 @@ import { DatabaseConnection } from '../database/Connection';
 const db = DatabaseConnection.getConnection();
 type Props = {};
 export default class BillDetailScreen extends Component<Props> {
-  static navigationOptions = ({navigation}) => {
-    return {
-      title: navigation.getParam('headerTitle')
-    };
-  };
 
   constructor(props) {
     super(props)
@@ -108,7 +103,12 @@ export default class BillDetailScreen extends Component<Props> {
           <View style={styles.actionSection}>
              <TouchableOpacity 
               style={{flex:1 ,  borderColor:'lightgray', borderWidth:0.2, padding: 15, justifyContent: 'center', alignItems: 'center',}}
-
+              onPress={ () => {
+                this.props.navigation.navigate('Edit', {
+                  id: bill.ID,
+                  headerTitle: bill.Title,
+                })
+              }}
             >
                     <Entypo name="edit" size={60} color="#FF9B9B" />
                     <Text style={{fontSize:18, color: 'gray',}}>
