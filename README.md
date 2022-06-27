@@ -1,6 +1,6 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 # BillBell
 
@@ -56,6 +56,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/callmeyonggor"><img src="https://avatars.githubusercontent.com/u/46757018?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ng Jia Yong</b></sub></a><br /><a href="https://github.com/callmeyonggor/BillBell/commits?author=callmeyonggor" title="Code">💻</a> <a href="#ideas-callmeyonggor" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/callmeyonggor/BillBell/commits?author=callmeyonggor" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/lwleo02"><img src="https://avatars.githubusercontent.com/u/86616877?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lwleo02</b></sub></a><br /><a href="https://github.com/callmeyonggor/BillBell/commits?author=lwleo02" title="Code">💻</a> <a href="#ideas-lwleo02" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/callmeyonggor/BillBell/commits?author=lwleo02" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Kai411"><img src="https://avatars.githubusercontent.com/u/51218403?v=4?s=100" width="100px;" alt=""/><br /><sub><b>kaii411</b></sub></a><br /><a href="https://github.com/callmeyonggor/BillBell/commits?author=Kai411" title="Code">💻</a> <a href="#ideas-Kai411" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/callmeyonggor/BillBell/commits?author=Kai411" title="Documentation">📖</a> <a href="#design-Kai411" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/yuanjie8629"><img src="https://avatars.githubusercontent.com/u/86699785?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tan Yuan Jie</b></sub></a><br /><a href="https://github.com/callmeyonggor/BillBell/commits?author=yuanjie8629" title="Code">💻</a> <a href="#ideas-yuanjie8629" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/callmeyonggor/BillBell/commits?author=yuanjie8629" title="Documentation">📖</a></td>
   </tr>
 </table>
 
