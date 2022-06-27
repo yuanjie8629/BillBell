@@ -18,12 +18,12 @@ This is a mobile financial management application that helps users to manage the
 ## Installation Steps
 1. Install the packages using npm.
 	```
-  npm i
-  ```
+ 	 npm i
+	```
 2. Create SQLite database by running the `createdb.py`.
 	```
-  python createdb.py
-  ```
+  	python createdb.py
+	```
 3. Refer to the [link](https://www.npmjs.com/package/react-native-sqlite-storage) to setup SQLite storage.
 4. Run the application using Android emulator or IOS emulator.
 	```
