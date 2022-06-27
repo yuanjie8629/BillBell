@@ -1,0 +1,25 @@
+{
+  "projectName": "BillBell",
+  "projectOwner": "callmeyonggor",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "callmeyonggor",
+      "name": "Ng Jia Yong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46757018?v=4",
+      "profile": "https://github.com/callmeyonggor",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
