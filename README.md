@@ -33,6 +33,6 @@ This is a mobile financial management application that helps users to manage the
 3. Home <br> <img src="previews/Home.png"><br><br>
 4. View All Bills <br> <img src="previews/ViewAllBills.png"><br><br>
 5. View Bill <br> <img src="previews/ViewBill.png"><br><br>
-6. Add Bill <br> <img src="previews/Add Bill.png"><br><br>
+6. Add Bill <br> <img src="previews/AddBill.png"><br><br>
 7. Delete Bill <br> <img src="previews/DeleteBill.png"><br><br>
 8. Settings <br> <img src="previews/Settings.png"><br><br>
