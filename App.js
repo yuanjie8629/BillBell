@@ -58,12 +58,13 @@ function Main() {
         name={'Home'}
         component={HomeScreen}
         options={{
+          title: '',
           headerShown: false,
           tabBarIcon: ({focused}) => (
             <View
               style={{
                 position: 'absolute',
-                top: 10,
+                top: 15,
               }}>
               <Image
                 source={require('./assets/home.png')}
@@ -82,12 +83,13 @@ function Main() {
         name={'ViewBill'}
         component={MainStackNavigator}
         options={{
+          title: '',
           headerShown: false,
           tabBarIcon: ({focused}) => (
             <View
               style={{
                 position: 'absolute',
-                top: 10,
+                top: 15,
               }}>
               <Image
                 source={require('./assets/clipboard-list.png')}
@@ -106,17 +108,18 @@ function Main() {
         name={'Add'}
         component={AddScreen}
         options={{
+          title: '',
           headerShown: false,
           tabBarIcon: ({focused}) => (
             <View
               style={{
-                width: 55,
-                height: 55,
+                width: 65,
+                height: 65,
                 backgroundColor: '#FF9b9b',
-                borderRadius: 30,
+                borderRadius: 50,
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginBottom: Platform.OS == 'android' ? 40 : 30,
+                marginBottom: Platform.OS == 'android' ? 30 : 20,
               }}>
               <Image
                 source={require('./assets/plus.png')}
@@ -135,12 +138,13 @@ function Main() {
         name={'About'}
         component={About}
         options={{
+          title: '',
           headerShown: false,
           tabBarIcon: ({focused}) => (
             <View
               style={{
                 position: 'absolute',
-                top: 10,
+                top: 15,
               }}>
               <Image
                 source={require('./assets/qm.png')}
@@ -159,12 +163,13 @@ function Main() {
         name={'Settings'}
         component={SettingsScreen}
         options={{
+          title: '',
           headerShown: false,
           tabBarIcon: ({focused}) => (
             <View
               style={{
                 position: 'absolute',
-                top: 10,
+                top: 15,
               }}>
               <Image
                 source={require('./assets/cog.png')}
