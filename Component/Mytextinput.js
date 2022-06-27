@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, TextInput } from 'react-native';
+import {View, TextInput} from 'react-native';
 
-const Mytextinput = (props) => {
+const Mytextinput = props => {
   return (
     <View
       style={{

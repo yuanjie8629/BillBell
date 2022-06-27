@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component } from 'react';
+import {Component} from 'react';
 import {
   Button,
   View,
@@ -13,14 +13,15 @@ import {
   TextInput,
   Pressable,
 } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from '@expo/vector-icons';
-import firebase from 'firebase';
-const { width, height } = Dimensions.get('screen');
+import firebase from '@react-native-firebase/app';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+const {width, height} = Dimensions.get('screen');
 
-export default function(props) {
+export default function (props) {
   const navigation = useNavigation();
   return <Register {...props} navigation={navigation} />;
 }
@@ -30,51 +31,54 @@ class Register extends Component {
     super(props);
 
     this.state = {
-      email:'',
-      password:'',
-      username:'',
-      confirmPassword:'',
-    }
-    this.onRegister = this.onRegister.bind(this)
+      email: '',
+      password: '',
+      username: '',
+      confirmPassword: '',
+    };
+    this.onRegister = this.onRegister.bind(this);
   }
 
-  onRegister(){
-    if (this.state.username == '' || this.state.email == '' || this.state.password == ''|| this.state.confirmPassword == '') {
-      alert("Please fill up all information");
-    }
-    else if (this.state.confirmPassword != this.state.password) {
-      alert("Please make sure your passwords match.");
-    }
-    else {
-      firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password)
-      .then((result) => {
-        firebase
-        .database()
-        .ref('users/' + this.state.username)
-        .set({
-          email: this.state.email,
-          password: this.state.password})
-        .then(() => {
-          alert("Successfully Register.","",
-          [
-            {text: 'ok', onPress: this.props.navigation.push('Login')}
+  onRegister() {
+    if (
+      this.state.username == '' ||
+      this.state.email == '' ||
+      this.state.password == '' ||
+      this.state.confirmPassword == ''
+    ) {
+      alert('Please fill up all information');
+    } else if (this.state.confirmPassword != this.state.password) {
+      alert('Please make sure your passwords match.');
+    } else {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.state.email, this.state.password)
+        .then(result => {
+          firebase
+            .app()
+            .database(
+              'https://bill-bell-default-rtdb.asia-southeast1.firebasedatabase.app/',
+            )
+            .ref('users/' + this.state.username)
+            .set({
+              email: this.state.email,
+              password: this.state.password,
+            });
+          alert('Successfully Register.', '', [
+            {text: 'ok', onPress: this.props.navigation.push('Login')},
           ]);
         })
-      })
-      .catch((error) => {
-        if (error.code === 'auth/email-already-in-use') {
-          alert('Email alreeady exists. Please try another email.');
-        }
-        else if (error.code === 'auth/weak-password') {
-          alert('Password should be at least 6 characters.');
-        }
-        else if (error.code === 'auth/invalid-email') {
-          alert('Please enter valid email.');
-        }
-        else {
-          alert(error);
-        }
-      })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            alert('Email alreeady exists. Please try another email.');
+          } else if (error.code === 'auth/weak-password') {
+            alert('Password should be at least 6 characters.');
+          } else if (error.code === 'auth/invalid-email') {
+            alert('Please enter valid email.');
+          } else {
+            alert(error);
+          }
+        });
     }
   }
   render() {
@@ -95,9 +99,8 @@ class Register extends Component {
             }}
           />
         </View>
-        <View style={{ width: width, justifyContent: 'center' }}>
-          <Text
-            style={{ fontWeight: 'bold', fontSize: 25, alignSelf: 'center' }}>
+        <View style={{width: width, justifyContent: 'center'}}>
+          <Text style={{fontWeight: 'bold', fontSize: 25, alignSelf: 'center'}}>
             Let's get started!
           </Text>
           <Text
@@ -113,61 +116,62 @@ class Register extends Component {
         <View style={styles.inputField}>
           <Image
             source={require('../assets/user.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
           <TextInput
             placeholder="Username"
-            onChangeText = {(username) => this.setState({username})}
+            onChangeText={username => this.setState({username})}
             value={this.state.username}
-            style={{ paddingHorizontal: 10, width: width / 2 }}
+            style={{paddingHorizontal: 10, width: width / 2}}
           />
         </View>
         <View style={styles.inputField}>
           <Image
             source={require('../assets/mail.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
           <TextInput
             placeholder="Email"
-            onChangeText = {(email) => this.setState({email})}
+            onChangeText={email => this.setState({email})}
             value={this.state.email}
-            style={{ paddingHorizontal: 10, width: width / 2 }}
+            style={{paddingHorizontal: 10, width: width / 2}}
           />
         </View>
 
         <View style={styles.inputField}>
           <Image
             source={require('../assets/padlock.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
           <TextInput
             secureTextEntry
             placeholder="Password"
-            onChangeText = {(password) => this.setState({password})}
+            onChangeText={password => this.setState({password})}
             value={this.state.password}
-            style={{ paddingHorizontal: 10, width: width / 2 }}
+            style={{paddingHorizontal: 10, width: width / 2}}
           />
         </View>
         <View style={styles.inputField}>
           <Image
             source={require('../assets/padlock.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
           <TextInput
             secureTextEntry
             placeholder="Confirm password"
-            onChangeText = {(confirmPassword) => this.setState({confirmPassword})}
+            onChangeText={confirmPassword => this.setState({confirmPassword})}
             value={this.state.confirmPassword}
-            style={{ paddingHorizontal: 10, width: width / 2 }}
+            style={{paddingHorizontal: 10, width: width / 2}}
           />
         </View>
 
-        <View style={{ alignItems: 'center', marginTop: 40 }}>
+        <View style={{alignItems: 'center', marginTop: 40}}>
           <Pressable
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? '#e6e6e6' : '#ffb7c5' },
+            style={({pressed}) => [
+              {backgroundColor: pressed ? '#e6e6e6' : '#ffb7c5'},
               styles.bbutton,
-            ]}  onPress={this.onRegister}>
+            ]}
+            onPress={this.onRegister}>
             <Text style={styles.buttonText}>Register Now</Text>
           </Pressable>
         </View>
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     width: width * 0.7,
     height: 45,
     flexDirection: 'row',
-    shadowOffset: { width: 1, height: 1 },
+    shadowOffset: {width: 1, height: 1},
     shadowOpacity: 0.9,
     shadowRadius: 1,
   },
@@ -217,4 +221,3 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
 });
-

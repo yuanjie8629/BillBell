@@ -17,75 +17,41 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
+import SettingOption from '../Component/SettingOption';
+import firebase from '@react-native-firebase/app';
+import auth from '@react-native-firebase/auth';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import About from './AboutUs';
+
 const username = 'Kai Seow';
 
-//Setting Button Component
-const SettingOption = ({ title, color }) => {
-  return (
-    <TouchableOpacity
-      style={{
-        justifyContent: 'center',
-        borderBottomWidth: 0.2,
-        height: hp('7%'),
-      }}>
-      <View style={{ flexDirection: 'row', paddingHorizontal: wp('5%') }}>
-        <Text
-          style={{
-            flex: 1,
-            fontWeight: 'bold',
-            fontSize: 15,
-            textAlign: 'left',
-            color: color,
-          }}>
-          {title}
-        </Text>
-        <Image
-          source={require('../assets/right-arrow.png')}
-          style={{
-            height: 15,
-            width: 15,
-          }}
-        />
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 export default function Settings() {
+  const navigation = useNavigation();
+  const OnSignOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        alert('Successfully Logout!', [
+          {text: 'ok', onPress: navigation.navigate('OnBoarding')},
+        ]);
+      })
+      .catch(error => {
+        // if (error.code === 'auth/no-current-user') {
+        //   alert('Failed! No Logged In Account Found.');
+        // } else {
+        //   console.log(error);
+        // }
+        navigation.navigate('OnBoarding');
+      });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.pageHeader}>
-        <Text style={{ fontWeight: 'bold', fontSize: 30, textAlign: 'left' }}>
+        <Text style={{fontWeight: 'bold', fontSize: 30, textAlign: 'left'}}>
           Settings
         </Text>
-      </View>
-
-      <View style={styles.settingHeaderContainer}>
-        <Text style={styles.settingHeader}>Profile</Text>
-      </View>
-
-      <View
-        style={{
-          height: hp('15%'),
-          flexDirection: 'row',
-          alignItems:'center',
-          justifyContent: 'center',
-        }}>
-        
-        <View style={{ justifyContent: 'center', alignItems: 'center', width: wp('60%') }}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              textAlign: 'center',
-              paddingTop: hp('2%'),
-            }}>
-            Welcome
-          </Text>
-          <Text
-            style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 22 }}>
-            {username}
-          </Text>
-        </View>
       </View>
 
       <View style={styles.settingHeaderContainer}>
@@ -94,10 +60,11 @@ export default function Settings() {
 
       <View>
         <ScrollView scrollEventThrottle={16}>
-          <View style={{ flex: 1 }}>
+          <View style={{flex: 1, height: hp('21%')}}>
             <ScrollView>
-              <SettingOption title="Log Out" color="#FF4242" />
-              <SettingOption title="Clear OnBoarding Screen Async" color="#FF4242" />
+              <TouchableOpacity onPress={OnSignOut}>
+                <SettingOption title="Log Out" color="#FF4242" />
+              </TouchableOpacity>
             </ScrollView>
           </View>
         </ScrollView>
@@ -105,13 +72,26 @@ export default function Settings() {
 
       <View>
         <View style={styles.settingHeaderContainer}>
-          <Text style={styles.settingHeader}>Info</Text>
+          <Text style={styles.settingHeader}>About us</Text>
         </View>
 
-        <SettingOption title="About Us" />
-      </View>
+        <View style={{alignSelf: 'center', paddingTop: 10}}>
+          <Text>This assignment is done by members group 27</Text>
+        </View>
 
-      
+        <View style={{paddingHorizontal: 55, paddingTop: 20}}>
+          <Text style={{fontWeight: 'bold'}}>Leader:</Text>
+          <Text>Ng Jia Yong</Text>
+        </View>
+
+        <View style={{paddingHorizontal: 55, paddingTop: 20}}>
+          <Text style={{fontWeight: 'bold'}}>Members:</Text>
+          <Text>Tan Yuan Jie</Text>
+          <Text>Lean Wei Liang</Text>
+          <Text>Seow Kai Sheng</Text>
+          <Text>Tong Jun Hou</Text>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }

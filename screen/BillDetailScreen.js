@@ -1,159 +1,222 @@
 import React, {Component} from 'react';
-import {Alert, TouchableHighlight, SafeAreaView, Text, View, StyleSheet, Platform, StatusBar, TouchableOpacity} from 'react-native';
-import { AntDesign, Ionicons, SimpleLineIcons, MaterialIcons, Entypo} from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { DatabaseConnection } from '../database/Connection';
+import {
+  Alert,
+  TouchableHighlight,
+  SafeAreaView,
+  Text,
+  View,
+  StyleSheet,
+  Platform,
+  StatusBar,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import LinearGradient from 'react-native-linear-gradient';
+import SQLite from 'react-native-sqlite-storage';
 
-const db = DatabaseConnection.getConnection();
 type Props = {};
 export default class BillDetailScreen extends Component<Props> {
-
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       billId: props.route.params.id,
-      bill: "",
+      bill: '',
     };
 
     this._query = this._query.bind(this);
+
+    this.db = SQLite.openDatabase({
+      name: 'billsdb',
+      createFromLocation: '~db.sqlite',
+    });
   }
-  
-   componentDidMount() {
+
+  componentDidMount() {
     this._query();
   }
 
   _query() {
-    db.transaction((tx) => {
-      tx.executeSql('SELECT * FROM Bill WHERE ID = ?', [this.state.billId], (tx, results) => {
-        if(results.rows.length) {
-          this.setState({
-            bill: results.rows.item(0),
-          })
-        }
-      })
+    this.db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM Bill WHERE ID = ?',
+        [this.state.billId],
+        (tx, results) => {
+          if (results.rows.length) {
+            this.setState({
+              bill: results.rows.item(0),
+            });
+          }
+        },
+      );
     });
   }
 
   _delete() {
-    Alert.alert('Confirm Deletion', 'Delete `'+ this.state.bill.Title +'`?', [
-      {
-        text: 'No',
-        onPress: () => {},
-      },
-      {
-        text: 'Yes',
-        onPress: () => {
-          db.transaction((tx) => {
-            tx.executeSql('DELETE FROM Bill WHERE ID = ?', [this.state.billId])
-          });
-          this.props.navigation.goBack();
+    Alert.alert(
+      'Confirm Deletion',
+      'Delete `' + this.state.bill.Title + '`?',
+      [
+        {
+          text: 'No',
+          onPress: () => {},
         },
-      },
-    ], { cancelable: false });
+        {
+          text: 'Yes',
+          onPress: () => {
+            this.db.transaction(tx => {
+              tx.executeSql('DELETE FROM Bill WHERE ID = ?', [
+                this.state.billId,
+              ]);
+            });
+            this.props.navigation.navigate('Bill');
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   }
 
-    render () {
-      let bill = this.state.bill;
+  render() {
+    let bill = this.state.bill;
 
-      return (
-        <SafeAreaView style={styles.container}>
-          <View style={styles.header}>
-            <TouchableHighlight onPress={() => this.props.navigation.goBack()}>
-              <View>
-                <AntDesign style={styles.backIcon} name="left" size={30} color="#fff" />
-              </View>
-            </TouchableHighlight>
-            <Text style={styles.title}>Bill Details</Text>
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <View style={{flex: 1, justifyContent: 'center'}}>
+              <Image
+                source={require('../assets/left-arrow.png')}
+                style={styles.backIcon}
+              />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.title}>Bill Details</Text>
+        </View>
+        <View style={styles.categorySection}>
+          <LinearGradient
+            colors={['#5f2c82', '#49a09d']}
+            style={styles.categoryIcon}>
+            <Image
+              source={require('../assets/dollar.png')}
+              style={{width: 35, height: 35, tintColor: 'white'}}
+            />
+          </LinearGradient>
+          <View style={styles.categoryContainer}>
+            <Text style={styles.category}>{bill.Category}</Text>
+            <Text style={styles.categoryDetail}>{bill.Title}</Text>
           </View>
-          <View style={styles.categorySection}>
-              <LinearGradient colors={['#5f2c82', '#49a09d']} style={styles.categoryIcon}>
-                  <SimpleLineIcons name="graduation" size={50} color="#fff" />
-              </LinearGradient>
-              <View style={styles.categoryContainer}>
-                  <Text style={styles.category}>
-                      {bill.Category}
-                  </Text>
-                  <Text style={styles.categoryDetail}>
-                      {bill.Title}
-                  </Text>
-              </View>
+        </View>
+        <View style={styles.billTimeSection}>
+          <Image
+            source={require('../assets/clock.png')}
+            style={styles.clockIcon}
+            color="gray"
+          />
+          <View style={styles.billContainer}>
+            <Text style={styles.bill}>RM{Number(bill.Amount).toFixed(2)}</Text>
+            <Text style={styles.dueDate}>By {bill.Date}</Text>
           </View>
-          <View style={styles.billTimeSection}>
-              <AntDesign style={styles.clockIcon} name="clockcircleo" size={50} color="gray" />
-              <View style={styles.billContainer}>
-                  <Text style={styles.bill}>
-                      RM{bill.Amount}
-                  </Text>
-                  <Text style={styles.dueDate}>
-                      By 20 July 2021
-                  </Text>
-              </View>
-             <View style={{flex:1, alignItems: 'flex-end', justifyContent: 'center',}}>
-                  <View style={styles.payIn}>
-                      <Text style={{fontSize:18, alignSelf:'center', color: 'gray'}}>
-                          7
-                      </Text>
-                      <Text style={{fontSize:18, alignSelf:'center', color: 'gray'}}>
-                          days to pay
-                      </Text>
-                  </View>
-              </View>
-          </View>
-          <View style={styles.actionSection}>
-             <TouchableOpacity 
-              style={{flex:1 ,  borderColor:'lightgray', borderWidth:0.2, padding: 15, justifyContent: 'center', alignItems: 'center',}}
-              onPress={ () => {
-                this.props.navigation.navigate('Edit', {
-                  id: bill.ID,
-                  headerTitle: bill.Title,
-                })
-              }}
-            >
-                    <Entypo name="edit" size={60} color="#FF9B9B" />
-                    <Text style={{fontSize:18, color: 'gray',}}>
-                        Edit
-                    </Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={{flex: 1,  borderColor:'lightgray', borderWidth:0.2, padding: 15, justifyContent: 'center', alignItems: 'center',}}
-                onPress={() => this._delete()}
-              >
-                    <MaterialIcons name="delete" size={60} color="#FF9B9B" />
-                    <Text style={{fontSize:18, color: 'gray',}}>
-                        Delete
-                    </Text>
-              </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      );
-    }
+        </View>
+        <View style={styles.actionSection}>
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              borderColor: 'lightgray',
+              borderWidth: 0.2,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() => {
+              this.props.navigation.navigate('Edit', {
+                id: bill.ID,
+                headerTitle: bill.Title,
+              });
+            }}>
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                source={require('../assets/edit.png')}
+                style={{
+                  width: 50,
+                  height: 50,
+                  tintColor: '#FF9b9b',
+                  marginBottom: 15,
+                }}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                color: 'gray',
+                alignSelf: 'center',
+                position: 'absolute',
+                bottom: 5,
+              }}>
+              Edit
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{flex: 1, borderColor: 'lightgray', borderWidth: 0.2}}
+            onPress={() => this._delete()}>
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                source={require('../assets/delete.png')}
+                style={{
+                  width: 50,
+                  height: 50,
+                  tintColor: '#FF9b9b',
+                  marginBottom: 15,
+                }}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                color: 'gray',
+                alignSelf: 'center',
+                position: 'absolute',
+                bottom: 5,
+              }}>
+              Delete
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
   }
-  
-  const styles = StyleSheet.create({
+}
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
 
   header: {
     backgroundColor: '#FF9B9B',
     height: '8%',
-    flexDirection: "row",
+    flexDirection: 'row',
   },
 
   title: {
     color: '#fff',
-    top: '3%',
-    left: '90%',
+    paddingLeft: 30,
     fontSize: 25,
     fontWeight: 'bold',
+    alignSelf: 'center',
   },
 
   backIcon: {
-    top: '3.5%',
-    left: '30%',
+    alignSelf: 'center',
+    marginLeft: 10,
+    width: 28,
+    height: 28,
+    tintColor: 'white',
   },
 
   categorySection: {
@@ -170,7 +233,7 @@ export default class BillDetailScreen extends Component<Props> {
     width: '18%',
     borderRadius: 50,
     alignItems: 'center',
-    justifyContent: 'center', 
+    justifyContent: 'center',
   },
 
   categoryContainer: {
@@ -181,12 +244,14 @@ export default class BillDetailScreen extends Component<Props> {
   category: {
     fontSize: 25,
     fontWeight: 'bold',
+    textTransform: 'capitalize',
   },
 
   categoryDetail: {
     opacity: 0.5,
     fontSize: 20,
     top: '10%',
+    textTransform: 'capitalize',
   },
 
   billTimeSection: {
@@ -202,8 +267,11 @@ export default class BillDetailScreen extends Component<Props> {
   },
 
   clockIcon: {
-    top: '5%',
+    alignSelf: 'center',
     left: '20%',
+    width: 45,
+    height: 45,
+    tintColor: 'grey',
   },
 
   bill: {

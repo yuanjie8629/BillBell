@@ -1,5 +1,5 @@
 import * as React from 'react';
-import useState, { Component } from 'react';
+import useState, {Component} from 'react';
 import {
   Button,
   View,
@@ -15,17 +15,18 @@ import {
   Pressable,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('screen');
+const {width, height} = Dimensions.get('screen');
 const bgs = ['#FF9B9B', '#DDBEFE', '#B98EFF', '#FF9B9B'];
 const DATA = [
   {
     key: '3571572',
     title: 'Hi there!',
-    description: 'Welcome to Bill Manager! Your personal bill managing app',
-    image: 'https://image.flaticon.com/icons/png/512/4161/4161781.png',
+    description: 'Welcome to Bill Bell ! Your personal bill managing app',
+    image:
+      'https://res.cloudinary.com/yuanjie/image/upload/v1654436138/BillBell/wave-hand_oq7opz.png',
     num: '1',
   },
   {
@@ -33,7 +34,8 @@ const DATA = [
     title: 'Record your spending',
     description:
       'With Bill Manager, you will be able to keep track of your daily spending easily',
-    image: 'https://image.flaticon.com/icons/png/512/2942/2942269.png',
+    image:
+      'https://res.cloudinary.com/yuanjie/image/upload/v1654436138/BillBell/calc-spending_ldiy43.png',
     num: '2',
   },
   {
@@ -41,14 +43,16 @@ const DATA = [
     title: 'Manage your bills',
     description:
       'You will be alerted for your upcomming bills and pending bills',
-    image: 'https://image.flaticon.com/icons/png/512/951/951764.png',
+    image:
+      'https://res.cloudinary.com/yuanjie/image/upload/v1654436138/BillBell/bills_odbyzy.png',
     num: '3',
   },
   {
     key: '3571603',
     title: 'View Statistics',
     description: 'Instant statistical view on your monthly spending and bills',
-    image: 'https://image.flaticon.com/icons/png/512/921/921591.png',
+    image:
+      'https://res.cloudinary.com/yuanjie/image/upload/v1654436138/BillBell/chart_oqqp9o.png',
     num: '4',
   },
 ];
@@ -62,9 +66,9 @@ const setOnboarding = async () => {
   }
 };
 
-const Indicator = ({ scrollX }) => {
+const Indicator = ({scrollX}) => {
   return (
-    <View style={{ position: 'absolute', bottom: 50, flexDirection: 'row' }}>
+    <View style={{position: 'absolute', bottom: 50, flexDirection: 'row'}}>
       {DATA.map((_, i) => {
         const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
 
@@ -101,10 +105,10 @@ const Indicator = ({ scrollX }) => {
   );
 };
 
-const Backdrop = ({ scrollX }) => {
+const Backdrop = ({scrollX}) => {
   const backgroundColor = scrollX.interpolate({
     inputRange: bgs.map((_, i) => i * width),
-    outputRange: bgs.map((bg) => bg),
+    outputRange: bgs.map(bg => bg),
   });
   return (
     <Animated.View
@@ -118,35 +122,35 @@ const Backdrop = ({ scrollX }) => {
   );
 };
 
-function Boardingbutton({ num}){
+function Boardingbutton({num}) {
   const navigation = useNavigation();
   if (num == 4) {
     return (
-      <View style={{ marginBottom: 20 }}>
+      <View style={{marginBottom: 20}}>
         <View
           style={{
             flex: 1,
             flexDirection: 'row',
             alignContent: 'center',
             justifyContent: 'center',
-            
           }}>
           <Pressable
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? '#e6e6e6' : '#f2f2f2' },
+            style={({pressed}) => [
+              {backgroundColor: pressed ? '#e6e6e6' : '#f2f2f2'},
               styles.bbutton,
-            ]} 
-            onPress={() =>  {setOnboarding; navigation.push('Login')}}> 
+            ]}
+            onPress={() => {
+              setOnboarding;
+              navigation.push('Login');
+            }}>
             <Text style={styles.text}>Let's get started</Text>
             <Image
               source={require('../assets/right-arrow.png')}
-              style={{ marginLeft: 15, width: 20, height: 20 }}
-            /> 
-            
+              style={{marginLeft: 15, width: 20, height: 20}}
+            />
           </Pressable>
         </View>
       </View>
-      
     );
   }
   return null;
@@ -161,19 +165,19 @@ export default function Onboarding() {
       <Backdrop scrollX={scrollX} />
       <Animated.FlatList
         data={DATA}
-        keyExtractor={(item) => item.key}
+        keyExtractor={item => item.key}
         horizontal
         scrollEventThrottle={32}
         onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          [{nativeEvent: {contentOffset: {x: scrollX}}}],
+          {useNativeDriver: false},
         )}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{paddingBottom: 100}}
         showsHorizontalScrollIndicator={false}
         pagingEnabled
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
-            <View style={{ width, alignItems: 'center', padding: 20 }}>
+            <View style={{width, alignItems: 'center', padding: 20}}>
               <View
                 style={{
                   flex: 0.7,
@@ -181,7 +185,7 @@ export default function Onboarding() {
                   justifyContent: 'center',
                 }}>
                 <Image
-                  source={{ uri: item.image }}
+                  source={{uri: item.image}}
                   style={{
                     width: width / 2,
                     height: height / 2,
@@ -189,7 +193,7 @@ export default function Onboarding() {
                   }}
                 />
               </View>
-              <View style={{ flex: 0.3 }}>
+              <View style={{flex: 0.3}}>
                 <Text
                   style={{
                     color: '#fff',
@@ -224,7 +228,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, // Padding to prevent content overlap with status bar
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -240,7 +243,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginTop: 40,
     flexDirection: 'row',
-    shadowOffset: { width: 1, height: 1 },
+    shadowOffset: {width: 1, height: 1},
     shadowOpacity: 0.9,
     shadowRadius: 1,
   },

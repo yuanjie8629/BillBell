@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import * as React from 'react';
-import { useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -15,191 +15,105 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
-
-import Constants from 'expo-constants';
-
+import SQLite from 'react-native-sqlite-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import HomeCard from '../Component/HomeCard';
+import ProgressBarHome from '../Component/ProgressBar';
 
-import firebase from 'firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+const db = SQLite.openDatabase({
+  name: 'billsdb',
+  createFromLocation: '~db.sqlite',
+});
 
-const pendingBillAmount = 3; // number of pending bills <-
-
-const month = 'JULY'; // current month <-
-const budgetStatus = 'Is looking good so far!'; // overall budget status (good / warning- near limit / overspent)
-
-const billUtilitySpent = 101.2; //total spending for utility & bills category <-
-const dailySpent = 159.76; // total spending for daily category ( ) <-
-const transportTravelSpent = 120.6; // total spending for transport & travel category <-
-const others = 207.1; // addition of excluded category in home screen <-
-const createTable = () => {
-  db.transaction((tx) => {
-      tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS Bill(ID INTEGER PRIMARY KEY AUTOINCREMENT, Title VARCHAR(20), Category VARCHAR(10), Amount REAL(100), Date VARCHAR(10))'
-      )
-  })
-}
-const totalSpent =
-  billUtilitySpent + dailySpent + transportTravelSpent + others; // total amount spent
-
-{
-  /* Home Card Component */
-}
-const HomeCard = ({ header, rm, content, end, color, marginR }) => {
-  return (
-    <View style={{ alignItems: 'center', flex: 1, width: wp('100%') }}>
-      <View
-        style={{
-          height: 210,
-          width: wp('80%'),
-          flex: 1,
-          position: 'relative',
-        }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              height: 201,
-              width: wp('80%'),
-              borderRadius: 15,
-              justifyContent: 'center',
-              backgroundColor: color,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 3 },
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-              elevation: 7,
-            }}>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: 'white',
-              }}>
-              {header}
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontWeight: 'bold',
-                fontSize: 30,
-                color: 'white',
-              }}>
-              {rm}
-              {content}
-            </Text>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: 'white',
-              }}>
-              {end}
-            </Text>
-          </View>
-        </View>
-      </View>
-    </View>
+export default function App({navigation}) {
+  let [billUtilitySpent, setbillUtilitySpent] = useState((0).toFixed(2));
+  let [dailySpent, setdailySpent] = useState((0).toFixed(2));
+  let [transportTravelSpent, settransportTravelSpent] = useState(
+    (0).toFixed(2),
   );
-};
+  let [othersSpent, setothersSpent] = useState((0).toFixed(2));
 
-{
-  /* ProgressBar component*/
-}
-const ProgressBarHome = ({ step, height, name, color }) => {
   useEffect(() => {
-    createTable();
-  }, []);
-  
-  const [width, setWidth] = React.useState(0);
-  const animatedValue = React.useRef(new Animated.Value(-1000)).current;
-  const reactive = React.useRef(new Animated.Value(-1000)).current;
-  const steps = totalSpent;
+    let isMounted = true;
+    if (isMounted) {
+      navigation.addListener('focus', () => {
+        db.transaction(tx => {
+          tx.executeSql(
+            'SELECT * FROM Bill WHERE Category="Bill & Utility"',
+            [],
+            (tx, results) => {
+              console.log(results.rows.raw());
+              var spent = 0;
+              for (let i = 0; i < results.rows.length; i++) {
+                spent = spent + results.rows.item(i).Amount;
+              }
+              setbillUtilitySpent(spent.toFixed(2));
+            },
+          );
 
-  React.useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: reactive,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+          tx.executeSql(
+            'SELECT * FROM Bill WHERE Category IN ("Drink & Dine", "Shopping", "Grocery")',
+            [],
+            (tx, results) => {
+              console.log(results.rows.raw());
+              var spent2 = 0;
+              for (let i = 0; i < results.rows.length; i++) {
+                spent2 = spent2 + results.rows.item(i).Amount;
+              }
+              setdailySpent(spent2.toFixed(2));
+            },
+          );
 
-  React.useEffect(() => {
-    reactive.setValue(-width + (width * step) / steps);
-  }, [step, width]);
+          tx.executeSql(
+            'SELECT * FROM Bill WHERE Category="Transport & Travel"',
+            [],
+            (tx, results) => {
+              console.log(results.rows.raw());
+              var spent3 = 0;
+              for (let i = 0; i < results.rows.length; i++) {
+                spent3 = spent3 + results.rows.item(i).Amount;
+              }
+              settransportTravelSpent(spent3.toFixed(2));
+            },
+          );
 
-  return (
-    <>
-      <View style={{ flexDirection: 'row' }}>
-        <Text
-          style={{
-            paddingBottom: 2,
-            fontWeight: 'bold',
-            flex: 1,
-            paddingLeft: 5,
-          }}>
-          {name}
-        </Text>
-        <Text
-          style={{
-            paddingBottom: 2,
-            alginItems: 'flex-end',
-            fontSize: 10,
-            paddingRight: 10,
-          }}>
-          {step}
-        </Text>
-      </View>
-      <View
-        onLayout={(e) => {
-          const newWidth = e.nativeEvent.layout.width;
+          tx.executeSql(
+            'SELECT * FROM Bill WHERE Category IN ("Others", "Education", "Health & Fitness", "Personal Care")',
+            [],
+            (tx, results) => {
+              console.log(results.rows.raw());
+              var spent4 = 0;
+              for (let i = 0; i < results.rows.length; i++) {
+                spent4 = spent4 + results.rows.item(i).Amount;
+              }
+              setothersSpent(spent4.toFixed(2));
+            },
+          );
+        });
+      });
+    }
+  });
 
-          setWidth(newWidth);
-        }}
-        style={{
-          height,
-          backgroundColor: 'rgba(0, 0, 0, 0.1)',
-          borderRadius: height,
-          overflow: 'hidden',
-        }}>
-        <Animated.View
-          style={{
-            height,
-            borderRadius: height,
-            backgroundColor: color,
+  let totalSpent = (
+    Number(billUtilitySpent) +
+    Number(dailySpent) +
+    Number(transportTravelSpent) +
+    Number(othersSpent)
+  ).toFixed(2); // total amount spent
 
-            left: 0,
-            top: 0,
-            transform: [
-              {
-                translateX: animatedValue,
-              },
-            ],
-          }}
-        />
-      </View>
-    </>
-  );
-};
-{
-  /* ^^^ Progress Bar Component ^^^ */
-}
-
-
-export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.top}>
         <View style={styles.welcome}>
-          <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
-            Welcome Back!
-          </Text>
+          <Text style={{fontSize: 22, fontWeight: 'bold'}}>Welcome!</Text>
         </View>
       </View>
 
-      <View style={{ height: hp('35%') }}>
+      <View style={{height: hp('35%')}}>
         <View>
           <Text
             style={{
@@ -214,8 +128,8 @@ export default function App() {
         {/* Start of Home Page Card Horizontal Scroll*/}
         <View>
           <ScrollView scrollEventThrottle={16}>
-            <View style={{ flex: 1, paddingTop: 20 }}>
-              <View style={{ height: 210 }}>
+            <View style={{flex: 1, paddingTop: 20}}>
+              <View style={{height: 210}}>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
@@ -224,7 +138,6 @@ export default function App() {
                     header="You have spent"
                     rm="RM"
                     content={totalSpent}
-                    end="So far this month"
                     color="#56ccf2"
                     marginR="7%"
                   />
@@ -236,11 +149,11 @@ export default function App() {
         {/* End of Home Page Card Horizontal Scroll*/}
       </View>
 
-      <View style={{ height: hp('45%') }}>
+      <View style={{height: hp('45%')}}>
         {/* Start of home progress bar*/}
-        <View style={{ paddingTop: hp('3%') }}>
-          <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>
-            Breakdown of your spending this month
+        <View style={{paddingTop: hp('3%')}}>
+          <Text style={{fontWeight: 'bold', textAlign: 'center'}}>
+            Breakdown of your spending
           </Text>
         </View>
 
@@ -249,7 +162,7 @@ export default function App() {
             <ProgressBarHome
               step={billUtilitySpent}
               height={20}
-              name={'Bills & Utilities'}
+              name={'Bill & Utility'}
               color={'#49eea9'}
             />
           </View>
@@ -274,7 +187,7 @@ export default function App() {
 
           <View style={styles.progressBar}>
             <ProgressBarHome
-              step={others}
+              step={othersSpent}
               height={20}
               name={'Others'}
               color={'#f46b45'}
@@ -283,29 +196,6 @@ export default function App() {
         </View>
         {/* End of progress bar container*/}
       </View>
-
-      {/* Add to app.json
-      
-        "androidNavigationBar": {
-     
-        Determines to show or hide bottom navigation bar.
-        "true" to show, "false" to hide.
-        If set to false, status bar will also be hide. As it's a general rule to hide both status bar and navigation bar on Android developer official docs.
-      
-        "visible": BOOLEAN,
-    
-        Configure the navigation bar icons to have light or dark color.
-        Valid values: "light-content", "dark-content".
-    
-        "barStyle": STRING,
-
-        
-        Configuration for android navigation bar.
-        6 character long hex color string, eg: "#000000"
-    
-        "backgroundColor": STRING
-        }
-      For Same Color Native Navigation Bar*/}
     </SafeAreaView>
   );
 }
@@ -314,7 +204,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, // Padding to prevent content overlap with status bar
   },
 
   welcome: {
@@ -332,7 +221,7 @@ const styles = StyleSheet.create({
   top: {
     flexDirection: 'row',
     paddingTop: 20,
-    height: hp('10%'),
+    height: hp('8%'),
   },
 
   homeProgressBarContainer: {
@@ -344,5 +233,4 @@ const styles = StyleSheet.create({
   progressBar: {
     marginTop: 20,
   },
-
 });

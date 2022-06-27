@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Component } from 'react';
+import {Component} from 'react';
 import {
   Button,
   View,
@@ -13,19 +13,21 @@ import {
   TextInput,
   Pressable,
 } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from '@expo/vector-icons';
-import firebase from 'firebase';
-const { width, height } = Dimensions.get('screen');
+import firebase from '@react-native-firebase/app';
+import auth from '@react-native-firebase/auth';
+const {width, height} = Dimensions.get('screen');
 
 const setLogin = async () => {
   try {
-    await AsyncStorage.setItem('@', 'true');
+    await AsyncStorage.setItem('@loggedIn', 'true');
     console.log('Logged in');
   } catch (err) {
     console.log('Error @setItem: ', err);
+  } finally {
+    this.props.navigation.push('Main');
   }
 };
 
@@ -47,7 +49,7 @@ const clearOnboarding = async () => {
   }
 };
 
-export default function(props) {
+export default function (props) {
   const navigation = useNavigation();
   return <Login {...props} navigation={navigation} />;
 }
@@ -57,35 +59,36 @@ class Login extends Component {
     super(props);
 
     this.state = {
-      email:'',
-      password:''
-    }
+      email: '',
+      password: '',
+    };
 
-    this.onLogin = this.onLogin.bind(this)
+    this.onLogin = this.onLogin.bind(this);
   }
 
   onLogin() {
-    if (this.state.email == '' || this.state.password == ''){
-      alert("Please enter both email and password.",)
-    }
-    else {
-      firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password)
-      .then((result) => {
-         alert("Successfully Login.",
-        [
-          {text: 'ok', onPress: this.props.navigation.push('Main')}
-        ]);
-      })
-      .catch((error) => {
-        if (error.code === 'auth/invalid-email') {
-          alert("Invalid username or Password");
-        }
-        else {
-          alert(error)
-        }
-      })
+    if (this.state.email == '' || this.state.password == '') {
+      alert('Please enter both email and password.');
+    } else {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then(result => {
+          console.log(result);
+          alert('Successfully Login.', [
+            {text: 'ok', onPress: this.props.navigation.push('Main')},
+          ]);
+        })
+        .catch(error => {
+          if (error.code === 'auth/invalid-email' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+            alert('Invalid email or Password');
+          } else {
+            alert(error);
+          }
+        });
     }
   }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -104,12 +107,11 @@ class Login extends Component {
             }}
           />
         </View>
-        <View style={{ width: width, justifyContent: 'center' }}>
-          <Text
-            style={{ fontWeight: 'bold', fontSize: 25, alignSelf: 'center' }}>
+        <View style={{width: width, justifyContent: 'center'}}>
+          <Text style={{fontWeight: 'bold', fontSize: 25, alignSelf: 'center'}}>
             Let's sign you in
           </Text>
-          <Text style={{ fontSize: 15, alignSelf: 'center' }}>
+          <Text style={{fontSize: 15, alignSelf: 'center'}}>
             Welcome to Bill Bell
           </Text>
         </View>
@@ -128,13 +130,13 @@ class Login extends Component {
           }}>
           <Image
             source={require('../assets/mail.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
           <TextInput
             placeholder="Email"
-            onChangeText = {(email) => this.setState({email})}
+            onChangeText={email => this.setState({email})}
             value={this.state.email}
-            style={{ paddingHorizontal: 10, width: width / 2 }}
+            style={{paddingHorizontal: 10, width: width / 2}}
           />
         </View>
 
@@ -153,45 +155,53 @@ class Login extends Component {
           }}>
           <Image
             source={require('../assets/padlock.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
           <TextInput
             secureTextEntry
             placeholder="Password"
-            onChangeText = {(password) => this.setState({password})}
+            onChangeText={password => this.setState({password})}
             value={this.state.password}
-            style={{ paddingHorizontal: 10, width: width / 2 }}
+            style={{paddingHorizontal: 10, width: width / 2}}
           />
         </View>
 
-        <View style={{ alignItems: 'center', marginTop: 40 }}>
+        <View style={{alignItems: 'center', marginTop: 40}}>
           <Pressable
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? '#e6e6e6' : '#ffb7c5' },
+            style={({pressed}) => [
+              {backgroundColor: pressed ? '#e6e6e6' : '#ffb7c5'},
               styles.bbutton,
-            ]}  onPress={this.onLogin}>
+            ]}
+            onPress={this.onLogin}>
             <Text style={styles.buttonText}>Login</Text>
           </Pressable>
         </View>
 
-        <View style={{ marginTop: 10, marginBottom: 10 }}>
-          <Text style={{ fontWeight: 'bold' }}>Or</Text>
+        <View style={{marginTop: 10, marginBottom: 10}}>
+          <Text style={{fontWeight: 'bold'}}>Or</Text>
         </View>
 
         <View>
           <Pressable
-            style={({ pressed }) => [
-              { backgroundColor: pressed ? '#e06258' : 'grey' },
+            style={({pressed}) => [
+              {backgroundColor: pressed ? '#e06258' : 'grey'},
               styles.bbutton,
-            ]} onPress={() => this.props.navigation.push("Main")}>
+            ]}
+            onPress={() => this.props.navigation.push('Main')}>
             <Text style={styles.buttonTextThirdParty}>Continue with Guest</Text>
           </Pressable>
         </View>
 
-        <View style={{ marginTop: 40, marginBottom: 10 }}>
-          <Text style={{ fontWeight: 'bold'}}>New user?<Text style={styles.registerLink} onPress={() => this.props.navigation.push('Register')}>Register Now</Text></Text>
+        <View style={{marginTop: 40, marginBottom: 10}}>
+          <Text style={{fontWeight: 'bold'}}>
+            New user?
+            <Text
+              style={styles.registerLink}
+              onPress={() => this.props.navigation.push('Register')}>
+              Register Now
+            </Text>
+          </Text>
         </View>
-
       </SafeAreaView>
     );
   }
@@ -201,7 +211,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0, // Padding to prevent content overlap with status bar
     alignItems: 'center',
   },
   bbutton: {
@@ -210,11 +219,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 30,
-    elevation: 3,
     width: width * 0.7,
     height: 45,
     flexDirection: 'row',
-    shadowOffset: { width: 1, height: 1 },
+    elevation: 3,
+    shadowOffset: {width: 1, height: 1},
     shadowOpacity: 0.9,
     shadowRadius: 1,
   },
@@ -223,19 +232,18 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: '#333333'
+    color: '#333333',
   },
   buttonTextThirdParty: {
     fontSize: 16,
     lineHeight: 21,
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: '#fff'
+    color: '#fff',
   },
   registerLink: {
-    fontWeight: 'bold', 
+    fontWeight: 'bold',
     textDecorationLine: 'underline',
-    color: 'grey'
-  }
+    color: 'grey',
+  },
 });
-
