@@ -17,7 +17,8 @@
       "profile": "https://github.com/callmeyonggor",
       "contributions": [
         "code",
-        "ideas"
+        "ideas",
+        "doc"
       ]
     },
     {
@@ -29,6 +30,18 @@
         "code",
         "ideas",
         "doc"
+      ]
+    },
+    {
+      "login": "Kai411",
+      "name": "kaii411",
+      "avatar_url": "https://avatars.githubusercontent.com/u/51218403?v=4",
+      "profile": "https://github.com/Kai411",
+      "contributions": [
+        "code",
+        "ideas",
+        "doc",
+        "design"
       ]
     }
   ],
