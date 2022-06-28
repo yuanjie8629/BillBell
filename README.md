@@ -17,6 +17,7 @@ This is a mobile financial management application that helps users to manage the
 ## Tech Stack
 1. React Native
 2. Firebase
+3. SQLite
 
 ## Installation Steps
 1. Install the packages using npm.
