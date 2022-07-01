@@ -15,9 +15,16 @@ This is a mobile financial management application that helps users to manage the
 7. Delete Bills
 
 ## Tech Stack
-1. React Native
-2. Firebase
-3. SQLite
+1. [React Native](https://reactnative.dev/)
+2. [Firebase](https://firebase.google.com/)
+3. [SQLite](https://www.sqlite.org/index.html)
+4. [Figma](https://www.figma.com/)
+
+## System Design
+
+### Prototype Design
+- https://www.figma.com/file/XdQX8hV6we0u4izbD1Agzf/WAD?node-id=0%3A1
+- https://www.figma.com/file/HpjAOYAgsmBDNSw42H0cRO/Prototype-Design?node-id=0%3A1
 
 ## Installation Steps
 1. Install the packages using npm.
